@@ -1,0 +1,1 @@
+Sitemap: https://emurphy005.github.io/{{< var course.repo >}}/sitemap.xml
