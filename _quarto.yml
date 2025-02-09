@@ -1,0 +1,20 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "STA9750 2025 Spring Submission Material"
+  description:
+    Course Projects for STA9750 2025 Spring at Baruch College
+  site-url: "https://emurphy005.github.io/{{< var course.repo >}}/"
+  navbar:
+    background: primary
+    search: false
+    
+format:
+  html:
+    theme: journal
+    toc: false
+
+editor:
+  mode: source

@@ -1,0 +1,13 @@
+---
+title: "Erin Murphy"
+---
+![headshot](STA9750-2025-SPRING/headshot.ext)
+**Hi there! My name is Erin and welcome to my page!**   
+Currently a masters student at Baruch College, I am working towards a MS degree in Business Analytics with a concentration in Marketing. 
+
+```{r}
+#| include: false
+1+1
+```
+--------------
+Last Updated: `r format(Sys.time(), "%A %m %d, %Y at %H:%M%p")`
