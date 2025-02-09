@@ -5,6 +5,7 @@ title: "Erin Murphy"
 
 **Hi there! My name is Erin and welcome to my page!**   
 
+
 Located in Brooklyn, NY, I am currently a masters student at Baruch College working towards a MS degree in Business Analytics with a concentration in Marketing. 
 
 ```{r}
