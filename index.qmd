@@ -1,6 +1,7 @@
 ---
 title: "Erin Murphy"
 ---
+![headshot](/headshot3)
 
 **Hi there! My name is Erin and welcome to my page!**   
 
