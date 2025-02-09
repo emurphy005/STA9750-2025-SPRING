@@ -1,7 +1,7 @@
 ---
 title: "Erin Murphy"
 ---
-![headshot](https://github.com/emurphy005/STA9750-2025-SPRING/blob/main/EMHS.jpg)
+![headshot](STA9750-2025-SPRING/Headshot2.ext)
 
 **Hi there! My name is Erin and welcome to my page!**   
 
