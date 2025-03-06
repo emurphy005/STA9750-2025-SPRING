@@ -1,0 +1,506 @@
+---
+title: "Mini Project 1: NYC Taxpayer Spending Analysis"
+format:
+  html:
+    code-fold: true
+    toc: true
+    toc-depth: 4 
+---
+# ***The Ask:*** 
+New York City's Commission to Analyze Taxpayer Spending (CATS) has tasked our team to help the Commmissioners indentify efficiencies and new opportunites for spending taypayer money through the analysis of City payroll data. This will be done through the analysis of the payscales, salary caps, and rentention rates to see how changes in any of these areas can help the City spend money more effiently. 
+
+# ***Background & Inital Exploration:***
+In order to analyze the City payroll data, the first step is to ingest the 
+[Citywide Payroll Data](https://data.cityofnewyork.us/City-Government/Citywide-Payroll-Data-Fiscal-Year-/k397-673e/about_data)
+ and perform some inital clean-up and analysis of the data to understand what is included.  
+```{r}
+#| include: FALSE
+#Loading the libraries
+library(readr)
+library(dplyr)
+library(stringr)
+library(DT)
+library(scales)
+```
+```{r}
+#| include: FALSE
+#reading the data file and making it title case
+nyc_payroll<- read_csv("data/mp01/nyc_payroll_export.csv")
+payroll <- nyc_payroll |>
+  mutate(agency_name = str_to_title(agency_name),
+         last_name = str_to_title(last_name),
+         first_name = str_to_title(first_name),
+         work_location_borough = str_to_title(work_location_borough),
+         title_description = str_to_title(title_description),
+         leave_status_as_of_june_30 = str_to_title(leave_status_as_of_june_30)
+         )
+new_payroll<-head(payroll, 25)
+```
+```{r}
+#| echo: FALSE 
+#datatable of first 25 rows of the data
+datatable(new_payroll, options=list(searching=FALSE, 
+                         scrollY = "400px",
+                         scrollyX = TRUE,
+                         paging = FALSE,
+                         fixedHeader = TRUE,
+                         info=FALSE))
+```
+
+Above is a snap shot of the first 25 rows. However, overall there are a total of 6.22 million entries (rows) that capture 17 different categories (columns), spaning across ten years (2014-2024). The columns include but are not limited to:
+
+* Fiscal Year
+* First and Last Name
+* Title Description
+* Agency Name 
+* Job Location
+
+The data shows that New York City pays its employees in three different ways:
+
+* per Annum - employees who are paid a salary
+* per Day - employees who are paid a day rate
+* per Hour - employees who are paid per hour they work
+
+According to the data provided, employees are eligible for overtime pay for hours worked in addition to their contract hours. Overtime pay plus their base paid and any other compensation (including bonuses) results in their ***Total Compensation***. An example is shown in the below chart (first 25 rows shown). 
+```{r}
+#| include: FALSE
+# calculating total compensation
+total_employee_compensation <- payroll|>
+  mutate(
+    Total_Compensation = case_when(
+      pay_basis == "per Annum" ~ base_salary,
+      pay_basis == "per Hour" ~ base_salary * (regular_hours + ot_hours * 1.5),
+      pay_basis == "per Day" ~ base_salary * (regular_hours/7.5)
+    )
+  )
+#setting up separate/refined table to use as an example
+edit_compensation <- head(total_employee_compensation, 25)|>
+  select(fiscal_year, last_name, first_name, agency_name, title_description, Total_Compensation)
+```
+```{r}
+#| echo: FALSE
+#data table of first 25 rows of total compensation
+datatable(edit_compensation, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         scrollY = "400px",
+                         scrollX = TRUE,
+                         fixedHeader = TRUE,
+                         info=FALSE))
+```
+<br>
+Some other highlights and important facts found from initial analysis are:
+  
+  
+***Job title with the highest base pay:***
+```{r}
+#| include: FALSE
+#Job title with the highest pay
+job_title_max_bas <- total_employee_compensation |>
+  filter(base_salary == max(base_salary)) |>
+  select(fiscal_year, agency_name, title_description, base_salary)|>
+  rename(`Fiscal Year` = fiscal_year,
+         `Agency` = agency_name,
+         `Job Title` = title_description,
+         `Salary` = base_salary)|>
+  slice_head(n=1)
+```
+```{r}
+#| echo: FALSE
+#datatable for highest pay 
+datatable(job_title_max_bas, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         info=FALSE))
+```
+     
+```{r}
+#| include: FALSE
+#Highest City total Payroll - Individual & Year (including overtime):
+#highest_city_payroll <- total_employee_compensation |>
+  #filter(Total_Compensation == max(Total_Compensation))|>
+  #select(fiscal_year, last_name, first_name, title_description, Total_Compensation)|>
+  #rename(`Fiscal Year` = fiscal_year,
+         #`Last Name` = last_name,
+         #`First Name` = first_name, 
+         #`Job Title` = title_description,
+         #`Total Compensation` = Total_Compensation)|>
+  #slice_head(n=1)
+#For some reason its tells me Total_Compensation doesn't exist and I cannot get it to work
+```
+<br>
+***Individual worked the most overtime hours:***
+```{r}
+#| include: FALSE
+#calculating individual with most overtime hours 
+max_overtime <- total_employee_compensation |>
+  filter(ot_hours == max(ot_hours)) |>
+  select(fiscal_year, agency_name, last_name, first_name, ot_hours)|>
+  rename(`Fiscal Year` = fiscal_year,
+         `Agency` = agency_name,
+         `Last Name` = last_name,
+         `First Name` = first_name, 
+         `Overtime` = ot_hours)|>
+  slice_head(n=1)
+```
+```{r}
+#| echo: FALSE
+#data table for individual with most overtime hours 
+datatable(max_overtime, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         info=FALSE))
+```
+<br>
+***Agency with highest average total annual payroll (base and overtime pay per employee):***
+```{r}
+#| include: FALSE
+#calculating agency with highest annual payroll
+ave_total_payroll <- total_employee_compensation |>
+  group_by(agency_name) |>
+  summarise(highest_ave = max(mean(Total_Compensation))) |>
+  rename(`Agency` = agency_name,
+         `Highest Average` = highest_ave)|>
+  slice_head(n = 1)
+```
+```{r}
+#| echo: FALSE
+#data table for agency with highest annual payroll 
+datatable(ave_total_payroll, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         info=FALSE))
+```
+<br>
+***Agency with the most employees on payroll in each year:***
+```{r}
+#| include: FALSE
+#calculating agency with most employees on the payroll each year
+most_employees_payroll <- total_employee_compensation |>
+  group_by(fiscal_year, agency_name)|>
+  tally()|>
+  slice_max(n, n=1)|>
+  rename(`Fiscal Year` = fiscal_year,
+         `Agency` = agency_name,
+         `Total Employees` = n)
+```
+```{r}
+#| echo: FALSE
+#datatbale for most employees on payroll
+datatable(most_employees_payroll, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         info=FALSE))
+```
+<br>
+***Agency with the highest overtime usage (compared to regular hours):***
+```{r}
+#| include: FALSE
+#calculating agency with highest overtime usage
+highest_overtime_usage <- total_employee_compensation |>
+  group_by(agency_name) |>
+  summarise(overtime = sum(ot_hours))|>
+  rename(`Agency` = agency_name,
+         `Overtime` = overtime)|>
+  slice_head(n=1)
+```
+```{r}
+#| echo: FALSE
+#datatable for overtime usage
+datatable(highest_overtime_usage, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         info=FALSE))
+```
+
+```{r}
+#| include: FALSE
+#The city’s aggregate payroll grown over the past 10 years
+#payroll_growth <- total_employee_compensation |>
+  #group_by(fiscal_year) |>
+  #sum(Total_Compensation)
+#for some reason it tells me Total_Compensation does not exist so I cannot get this code to work
+
+```
+
+# ***Policy Analysis:***
+## *Policy I: Capping Salaries at Mayoral Level* 
+In New York City, the Mayor position is a salaried position. The current mayor of New York City is Eric Adams. His employement and pay history with the City can be seen below:
+
+```{r}
+#| include: FALSE
+#employee salary table for Eric Adams
+e_adams <- payroll |>
+  filter(first_name == "Eric",
+         last_name == "Adams",
+         mid_init == "L")|>
+  rename(`Fiscal Year` = fiscal_year,
+         `Position` = title_description,
+         `Agency` = agency_name,
+         `Salary` = base_salary) |>
+  select(`Fiscal Year`, Position, Agency, Salary)|>
+  arrange(desc(`Fiscal Year`))
+```
+```{r}
+#| echo: FALSE
+#datatable for EA
+datatable(e_adams, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         info=FALSE))
+```
+<br>
+However, he is not the highest paid employee in the City. There are other employees that have a higher total compensation than the mayor.
+```{r}
+#| include: FALSE
+# total amount that the mayor made each year 
+one_mayor <- total_employee_compensation |>
+  filter(
+    title_description == 'Mayor') |>
+  group_by(fiscal_year) |>
+  slice_head(n = 1)|>
+  summarise(Total_Mayoral_Pay = sum(Total_Compensation))
+```
+The top 5 people who were paid more than the mayor in any given year are: 
+```{r}
+#| echo: FALSE
+# employees that make over what the mayor was paid each year - top 5 
+employees_above_mayoral_pay <- total_employee_compensation |>
+  left_join(one_mayor, by = "fiscal_year" ) |>
+  filter(Total_Compensation > Total_Mayoral_Pay)|>
+  select(fiscal_year, agency_name, last_name, first_name, title_description, Total_Compensation)|>
+  rename(`Fiscal Year` = fiscal_year,
+         `Agency` = agency_name,
+         `Last Name` = last_name,
+         `First Name` = first_name,
+         `Position` = title_description,
+         `Total Compensation` = Total_Compensation)|>
+  arrange(desc(`Total Compensation`))|>
+  slice_head(n=5)
+```
+```{r}
+#| echo: FALSE
+#datatbale for employees paid more than mayor
+datatable(employees_above_mayoral_pay, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         info=FALSE))
+```
+
+```{r}
+#| include: FALSE
+# sum of total compensation above mayor pay
+sum_above_mayoral_pay <- employees_above_mayoral_pay |>
+  summarise(Total_Above_Mayor = sum(`Total Compensation`))
+#sum of total mayoral pay
+mayorsum <- one_mayor|>
+  summarise(sum(Total_Mayoral_Pay))
+#amount of savings 
+savings <- mayorsum - sum_above_mayoral_pay 
+```
+<br>
+This policy suggest the City should cap salaries at the mayoral level, which means no other person would have a salary more than the mayor's.
+
+If you were to cap all of the salaries above the mayoral level at the mayor level each year, during this ten year period, there would have been a total savings of **$700,277**.  
+<br>
+The Agencies and Positions most affected by this policy implementation would be:
+```{r}
+#| include: FALSE
+#list of agencies that make more than the mayor
+affected_agencies <- employees_above_mayoral_pay|>
+  distinct(Agency, Position)
+```
+```{r}
+#| echo: FALSE
+datatable(affected_agencies, options=list(searching=FALSE,
+                         paging=FALSE,
+                         info=FALSE))
+```
+<br>
+Since only 3 specific posistion would be affected, it would benefit the city to cap the pay. This would allow for the savings to be distributed to other areas and programs in the city that need it. 
+
+## *Policy II: Increasing Staffing to Reduce Overtime Expenses*
+When analyzing the data of the employee overtime pay of New York City, it quickly comes apparent that there are certain positions and agencies that accumulate more overtime hours than others. This second policy suggested the solution for this is to hire more full time employees to cover those extra hours, which will reduce the extra overtime costs.  
+  
+  
+For the sake of this analysis it it assummed that overtime pay is 1.5x the employee's base pay and that the standard work week for all employees is 37.5 (7.5 hours a day). The average hourly rate was calculated for all employees, including those who are salaried or have a day rate. 
+
+```{r}
+#| include: FALSE
+#get hourly rate for all employees
+payroll_data <- payroll|>
+  mutate(
+    hourly_rate = case_when(
+      pay_basis == "per Annum" ~ base_salary / 1950, #37.5 hours a week for 52 weeks
+      pay_basis == "per Day" ~ base_salary / 7.5,
+      pay_basis == "per Hour" ~ base_salary,
+      TRUE ~NA_real_
+    )
+  )
+#Total Overtime Hours Per Agency + Job Title
+overtime_summary <- payroll_data|>
+  group_by(agency_name, title_description)|>
+  summarise(
+    total_ot_hours = round(sum(ot_hours, na.rm = TRUE)),
+    avg_hourlry_rate = round(mean(hourly_rate, na.rm = TRUE)),
+    .groups = "drop"
+  )|>
+  filter(total_ot_hours > 0)
+```
+```{r}
+#| include: FALSE
+#| #dentify Top Job Titles Driving Overtime Costs
+job_title_overtime <- overtime_summary|>
+  mutate(
+    ot_cost = total_ot_hours * avg_hourlry_rate *1.5,
+    ot_cost = dollar(ot_cost, accuracy = 0.01)
+  )|>
+  select(agency_name, title_description, total_ot_hours, ot_cost)|>
+  rename(
+    `Agency` = agency_name,
+    `Position` = title_description,
+    `Total OT Hours` = total_ot_hours,
+    `OT Cost` = ot_cost
+  )|>
+  arrange(desc(`OT Cost`))|>
+  slice_head(n=10)
+```
+Through inital exploration, at the agency level, the Police Department, Fire Department, and Department of Corrections have the positions that utilize the most overtime. The specific jobs positions accumulating the most overtime are:
+
+
+| Police Department  | Fire Department | Department of Corrections |
+| ------------------ | --------------- | --------------------------|
+| Police Officer     | FireFighter     | Correnction Officer       |
+| Sergeant           | Lieutenant      | Sanitation Worker         |
+| Lieutenant         |                 |                           |
+
+
+It is reccommend that the city look to hire additional staff in these positions to lower the amount of overtime hours that are accrued in these positions. 
+```{r}
+#| include: FALSE
+#Calculate Full-Time Employees (FTEs) Needed to Replace Overtime
+overtime_summary <- overtime_summary |>
+  mutate(
+    fte_needed = total_ot_hours / 1950
+  )
+num_of_fte <- overtime_summary |>
+  summarise(total_fte_needed = sum(fte_needed, na.rm = TRUE))
+
+
+#calcualte cost savings 
+overtime_summary <- overtime_summary |>
+  mutate(
+    ot_cost = total_ot_hours * avg_hourlry_rate *1.5,
+    regular_cost = total_ot_hours * avg_hourlry_rate,
+    potential_savings = ot_cost - regular_cost
+  )
+```
+<br>
+If the city were to hire additional fulltime employees to cover ***all*** the overtime hours that were accumulated over the past 10 years, they would need to hire **202,462** more full time employees. Below outlines the total savings per agency, as well as the amount of additional full time employees needed to cover the overtime hours. 
+```{r}
+#| include: FALSE 
+#Num of full time employees needed
+overtime_summary <- overtime_summary |>
+  mutate(
+    fte_needed = round((total_ot_hours / 1950), 2)
+  )
+#Aggregate Savings to Agency Level 
+agency_savings <- overtime_summary |>
+  group_by(agency_name)|>
+  summarise(
+    total_savings = sum(potential_savings, na.rm = TRUE),
+    total_fte_needed = round(sum(fte_needed, na.rm = TRUE), 2),
+    .groups = "drop"
+  )|>
+  arrange(desc(total_savings))|>
+  rename(
+    `Agency` = agency_name,
+    `Total Savings` = total_savings,
+    `FTE Needed` = total_fte_needed
+  )
+  
+```
+
+```{r}
+#| echo: FALSE
+datatable(agency_savings, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         scrollY = "400px",
+                         info=FALSE))
+```
+<br>
+This would have saved the city **$7,452,570,913**. 
+
+## *Policy III: Improve Retention Rates to Increase Savings*
+On average in the New York City public sector, it can cost anywhere from 20%-30% of a positions salary to hire an individual for that position. In order to reduce costs and make sure the payroll system is as efficient as possible, the City must pay closer attention to retention rates amongst agencies to avoid additional costs of hiring new indviduals to replace those who have quit.
+<br> 
+```{r}
+#| include: FALSE
+# Count Active and Ceased Employees by Agency and Job Title
+turnover_analysis <- total_employee_compensation|>
+  group_by(fiscal_year, agency_name, title_description)|>
+  summarise(
+    active_count = sum(leave_status_as_of_june_30 =="Active", na.rm = TRUE),
+    ceased_count = sum(leave_status_as_of_june_30 == "Ceased", na = TRUE),
+    avg_compensation = mean(Total_Compensation, na.rm = TRUE),
+    .groups = "drop"
+  )|>
+  filter(active_count > 0)
+
+#Calculate Turnover Rate
+turnover_rates <- turnover_analysis |>
+  mutate(
+    turnover_rate = round((ceased_count / (active_count + ceased_count)), 2),
+    estimating_hiring_cost = avg_compensation * .35, #average hiring cost in NYC public sector 20%-30%
+    potential_savings = round((turnover_rate * estimating_hiring_cost * active_count), 2) # savings by reducing turnover 
+  )|>
+  arrange(desc(turnover_rate))
+
+#Aggregate Savings to Agency Level
+agency_savings_hiring <- turnover_rates |>
+  group_by(agency_name)|>
+  summarise(
+    total_savings = round(sum(potential_savings, na.rm = TRUE),2),
+    avg_turnover_rate = round(mean(turnover_rate, na.rm = TRUE), 2),
+    .groups = "drop"
+  )|>
+  arrange(desc(total_savings))|>
+  rename(
+    `Agency` = agency_name,
+    `Total Savings` = total_savings,
+    `Avg Turn Over Rate` = avg_turnover_rate
+  )
+
+#Identify Job Titles Driving the Most Turnover
+top_turnover_titles <- turnover_rates |>
+  select(fiscal_year, agency_name, title_description, turnover_rate, potential_savings)|>
+   arrange(desc(turnover_rate))|>
+  rename(`Fiscal Year` = fiscal_year,
+         `Agency` = agency_name,
+         `Position` = title_description,
+         `Turn Over Rate` = turnover_rate,
+         `Potential Savings` = potential_savings)|>
+  head(10)
+```
+Below are the top 10 positions with the most turnover, as well as the total savings each agency could have if they did not need to spend money to hire as many new employees. 
+
+**Top Ten Positions with most turnover:**
+```{r}
+#| echo: FALSE
+#datatable top titles 
+datatable(top_turnover_titles, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         scrollY = "400px",
+                         scrollX = TRUE,
+                         fixedHeader = TRUE,
+                         info=FALSE))
+```
+<br>
+**Agency Savings:**
+```{r}
+#| echo: FALSE
+#datatables agency savings 
+datatable(agency_savings_hiring, options=list(searching=FALSE, 
+                         paging=FALSE,
+                         scrollY = "400px",
+                         scrollX = TRUE,
+                         fixedHeader = TRUE,
+                         info=FALSE))
+```
+<br>
+A way that the city could promote employee retention is to implement a tiered bonus system. Using the savings from not having to hire new employees to replacce those who have quit, each agency could reward employees for the amount of time they stay at their job/within the job network covered by the New York City payroll system. For example, employees could recieve bonuses for staying 3.5 years, 5 years, 10 years, 15 years, and so on. This would not only help employee retention but also keep the money the City has within their budgets and not spent on new hire materials. 
+
+# ***Conclusion***
+If implemented, all three policies in this report can have a significant impact on the effiency of the New York City payroll. Having a more effiecnt payroll would allow for millions of dollars in savings that could be redistributed to other areas that have had their budgets cut, such as the New York Public Libray, the Parks Department and CUNY. These groups have had to cut programs and limit spending due to the lack of funding from the City, which is at the detriment of the citizens of New York City who rely on their services. It is the duty of the New York City government to make sure they are spending money appropriately and trying to find ways to save and reallocate these savings when they can. 
