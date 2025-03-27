@@ -49,7 +49,7 @@ emissions_data <- data.frame(
 )
 ```
 ```{r fig.width=12, fig.height=6}
-#| echo: FALSE
+#| include: FALSE
 ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   geom_bar(stat = "identity", show.legend = FALSE) +
   coord_flip() +
@@ -61,8 +61,8 @@ ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12)) +
   scale_y_log10(labels = scales::comma)
-  ggsave("plot1.png")
 ```
+![](plot1.png)
 <br>
 
 **Medium Agency Winner: Municipality of Anchorage**    
@@ -78,7 +78,7 @@ emissions_data <- data.frame(
 ```
 
 ```{r fig.width=12, fig.height=6}
-#| echo: false 
+#| include: false 
 ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   geom_bar(stat = "identity", show.legend = FALSE) +
   coord_flip() +
@@ -90,8 +90,10 @@ ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12)) +
   scale_y_log10(labels = scales::comma)
-  ggsave("plot2.png")
+  
 ```
+![](plot2.png)
+
 **Large Agency Winner: MTA New York City Transit**  
 With an estimated 3.6 million subway riders and 1.4 million bus riders. MTA New York City Transit has avoided  55,494,771,930 pounds of CO2 emissions.    
 This is quivalent to:
@@ -104,7 +106,7 @@ emissions_data <- data.frame(
 )
 ```
 ```{r fig.width=12, fig.height=6}
-#| echo: false 
+#| include: false 
 ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   geom_bar(stat = "identity", show.legend = FALSE) +
   coord_flip() +
@@ -116,8 +118,10 @@ ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12)) +
   scale_y_log10(labels = scales::comma)
-  ggsave("plot3.png")
+  
 ```
+![](plot3.png)
+
 # *Most Improved Efficiency*
 The **Most Improved Efficiency** award is given to those agencies who have optimized their their emissions relative to the number of passenger miles. Winners of this awarded were chosen by comparing their efficiency, which was calculated by dividing their emissions by their total passenger miles.
 <br> 
