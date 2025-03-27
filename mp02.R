@@ -541,6 +541,7 @@ ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12)) +
   scale_y_log10(labels = scales::comma)
+  ggsave("plot1.png")
 
 #medium
 emissions_data <- data.frame(
@@ -551,14 +552,16 @@ emissions_data <- data.frame(
 ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   geom_bar(stat = "identity", show.legend = FALSE) +
   coord_flip() +
-  scale_fill_manual(values = c("skyblue", "green", "orange")) +  # Colors for different categories
+  scale_fill_manual(values = c("skyblue", "green", "orange", "red")) +  # Colors for different categories
   labs(title = "CO2 Emissions Avoided vs. Environmental Equivalents", 
        y = "CO2 Emissions / Equivalents", 
        x = "Category") +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 12)) +
-  scale_y_log10(labels = scales::comma) 
+        axis.text.y = element_text(size = 12)) 
+  scale_y_log10(labels = scales::comma)
+  ggsave("plot2.png")
+
 
 #large
 emissions_data <- data.frame(
@@ -577,3 +580,4 @@ ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12)) +
   scale_y_log10(labels = scales::comma)
+  ggsave("plot3.png")
