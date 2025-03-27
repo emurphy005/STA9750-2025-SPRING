@@ -520,3 +520,60 @@ lg_lowest <- min(large_agency$total_upt, na.rm = TRUE)
 lg_largest <- max(large_agency$total_upt, na.rm = TRUE)
 print(lg_lowest)
 print(lg_largest)
+
+
+library(ggplot2)
+library(dplyr)
+
+#small
+emissions_data <- data.frame(
+  Category = c("Emissions Avoided", "Trees Planted", "Cars Off Road", "New Emissions Value"),  # Adding the new category
+  Emissions = c(59563931, 1180000, 5963, 35823050)  # Values for emissions avoided, tree planting, cars off the road, and the new value
+)
+ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  coord_flip() +
+  scale_fill_manual(values = c("skyblue", "green", "orange", "red")) +  # Different colors for each category
+  labs(title = "CO2 Emissions Avoided vs. Environmental Equivalents", 
+       y = "CO2 Emissions / Equivalents", 
+       x = "Category") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12)) +
+  scale_y_log10(labels = scales::comma)
+
+#medium
+emissions_data <- data.frame(
+  Category = c("Emissions Avoided", "Trees Planted", "Cars Off Road"),  # Different environmental comparisons
+  Emissions = c(59563931, 1180000, 5963)  # Values for emissions avoided, tree planting, and cars off the road
+)
+
+ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  coord_flip() +
+  scale_fill_manual(values = c("skyblue", "green", "orange")) +  # Colors for different categories
+  labs(title = "CO2 Emissions Avoided vs. Environmental Equivalents", 
+       y = "CO2 Emissions / Equivalents", 
+       x = "Category") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12)) +
+  scale_y_log10(labels = scales::comma) 
+
+#large
+emissions_data <- data.frame(
+  Category = c("Emissions Avoided", "Trees Planted", "Cars Off Road", "New Emissions Value"),  # Adding the new category
+  Emissions = c(59563931, 1180000, 5963, 55494771930)  # Values for emissions avoided, tree planting, cars off the road, and the new value
+)
+
+ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  coord_flip() +
+  scale_fill_manual(values = c("skyblue", "green", "orange", "red")) +  # Different colors for each category
+  labs(title = "CO2 Emissions Avoided vs. Environmental Equivalents", 
+       y = "CO2 Emissions / Equivalents", 
+       x = "Category") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12)) +
+  scale_y_log10(labels = scales::comma)
