@@ -61,6 +61,7 @@ ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12)) +
   scale_y_log10(labels = scales::comma)
+  ggsave("plot1.png")
 ```
 <br>
 
@@ -81,14 +82,15 @@ emissions_data <- data.frame(
 ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   geom_bar(stat = "identity", show.legend = FALSE) +
   coord_flip() +
-  scale_fill_manual(values = c("skyblue", "green", "orange")) +  # Colors for different categories
+  scale_fill_manual(values = c("skyblue", "green", "orange", "red")) +  # Colors for different categories
   labs(title = "CO2 Emissions Avoided vs. Environmental Equivalents", 
        y = "CO2 Emissions / Equivalents", 
        x = "Category") +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12)) +
-  scale_y_log10(labels = scales::comma) 
+  scale_y_log10(labels = scales::comma)
+  ggsave("plot2.png")
 ```
 **Large Agency Winner: MTA New York City Transit**  
 With an estimated 3.6 million subway riders and 1.4 million bus riders. MTA New York City Transit has avoided  55,494,771,930 pounds of CO2 emissions.    
@@ -114,6 +116,7 @@ ggplot(emissions_data, aes(x = Category, y = Emissions, fill = Category)) +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12)) +
   scale_y_log10(labels = scales::comma)
+  ggsave("plot3.png")
 ```
 # *Most Improved Efficiency*
 The **Most Improved Efficiency** award is given to those agencies who have optimized their their emissions relative to the number of passenger miles. Winners of this awarded were chosen by comparing their efficiency, which was calculated by dividing their emissions by their total passenger miles.
