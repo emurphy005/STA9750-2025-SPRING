@@ -117,5 +117,54 @@
     "title": "2025 Green Transit Honors",
     "section": "Footnotes",
     "text": "Footnotes\n\n\nA-Z↩︎"
+  },
+  {
+    "objectID": "mp03.html",
+    "href": "mp03.html",
+    "title": "The Ultimate Spotify Playlist",
+    "section": "",
+    "text": "A music playlist can make or break the mood at a party or even just a person’s individual mood. The right playlist can help set the mood or vibe for any occasion. There is no better feeling than when you have a playlist where bop after bop comes on and absolutely no skips. However, one wrong song can completely switch up the vibe — and not for the better.\nUsing the Spotify Song Analytics dataset, as well as the Spotify Million Playlist Dataset, I have set out to curate the ultimate playlist for good vibes this spring. This playlist will make you want to roll down the windows as you drive or just have a good time. It’ll help set the ultimate good vibes for the upcoming warmer seasons."
+  },
+  {
+    "objectID": "mp03.html#getting-the-data-inital-exploratory",
+    "href": "mp03.html#getting-the-data-inital-exploratory",
+    "title": "The Ultimate Spotify Playlist",
+    "section": "Getting the Data & Inital Exploratory",
+    "text": "Getting the Data & Inital Exploratory\nIn order to start to curate a playlist for good vibes this spring, I started by downloading the Spotify song analytics data set from user gabminamendez on github and processing it, which included reformatting the data so that each artist had its own line in the data set. An example of the first few rows of that data set can be seen below.\n\n\n\n\n\n\n Next, I downloaded and processed the Spotify Million Playlist dataset and rectangled the data into an more standard format that was easier to read."
+  },
+  {
+    "objectID": "mp03.html#getting-the-data",
+    "href": "mp03.html#getting-the-data",
+    "title": "The Ultimate Spotify Playlist",
+    "section": "Getting the Data",
+    "text": "Getting the Data\nIn order to begin curating a playlist for good vibes this spring, I started by downloading the Spotify Song Analytics dataset from user gabminamendez on GitHub and processing it. This included reformatting the data so that each artist had their own line in the dataset. An example of the first few rows of that dataset can be seen below.\n\n\n\n\n\n\n Next, I downloaded and processed the Spotify Million Playlist dataset and reshaped the data into a more standard format that was easier to read.\nThis gave me 13,000 playlists to work with."
+  },
+  {
+    "objectID": "mp03.html#inital-exploration",
+    "href": "mp03.html#inital-exploration",
+    "title": "The Ultimate Spotify Playlist",
+    "section": "Inital Exploration",
+    "text": "Inital Exploration\nNow to dive into the data.\nOut of the 13,000 playlists from the Spotify Millions data:\n\nThere are 206,451 distinct tracks\nThere are 42,327 distinct artists\nThe 5 most popular tracks are:\n\nHUMBLE. - Kendrick Lamar with 589 appearances\nOnce Dance - Drake with 562 appearances\nCloser - The Chainsmokers with 543 appearances\nBroccoli (feat. Lil Yachty) - DRAM with 525 appearances\nCongratulations - Post Malone with 511 appearances\n\nThe most popular song in a playlist that doesn’t have corresponding song charaterisitcs data is One Dance by Drake\nThe song with the highest danceability is Funky Cold Medina by Tone-Loc\nThe playlist with the longest average track length is “Sleep”\nThe most popular playlist is TOP POP with 15,842 followers"
+  },
+  {
+    "objectID": "mp03.html#what-makes-a-popular-song",
+    "href": "mp03.html#what-makes-a-popular-song",
+    "title": "The Ultimate Spotify Playlist",
+    "section": "What makes a popular song?",
+    "text": "What makes a popular song?\nThe next phase of exploartion involved looking at characteristics of popular songs.\nThe next phase of exploration involved looking at characteristics of popular songs.  I started by looking at the correlation between song popularity and playlist appearances. For the sake of this exploration, a song with a popularity score of 75 or higher is considered “popular.”\n The data showed there is little correlation between how popular a song is and the number of playlist appearances.  The song Champions by Kanye West had the most playlist appearances but only had a popularity rating of 68.\nAdditionally, Goosebumps by Travis Scott had the highest popularity score (92) but only appeared in 410 playlists.   Looking at the years when the most popular songs were released, the chart below shows that 2017 had the highest number of popular songs released in a single year.\n  Next, I looked at the danceability of the songs in this dataset.\n Danceability peaked in 2017.   As for the different decades represented:\n Songs from the 2010s were the most frequently included in playlists.   The frequency of musical keys is also important when it comes to popular songs.\n Songs in Key 1 and Key 7 were the most frequent in these playlists.   As for track length:\n The most popular tracks are between 3–5 minutes long\n and have an average popularity score of 64.4.   Knowing which artists have the most songs that are considered “popular” is important as well. The chart below shows the top 10 artists by average popularity rating."
+  },
+  {
+    "objectID": "mp03.html#building-the-playlist",
+    "href": "mp03.html#building-the-playlist",
+    "title": "The Ultimate Spotify Playlist",
+    "section": "Building the Playlist",
+    "text": "Building the Playlist\nNow that I’ve explored the data and evaluated the different properties of popular songs in these playlists, it’s time to start crafting the playlist. I began by choosing two anchor songs: “Closer” by The Chainsmokers and “YOUTH” by Troye Sivan.\n\nWhy these songs?\nThey remind me of the first warm days of spring—when all you want to do is be outside, hanging out in the sun, listening to chill music.  Of rolling the windows down, driving to the beach to meet up with friends.  Of just having a good time.   I started the curation by looking at songs that appeared on the same playlists as these two.\nI also identified artists that frequently appeared on those playlists and made note of them to assist in filtering.  Next, I looked at the release years.   “Closer” and “YOUTH” were released in 2016 and 2015, respecitvely. I’ve always had a soft spot for songs from those years-so this became the first filter for the platlist.   After filtering down to songs from 2015 and 2016, I focused on tempo:  “Closer” has a tempo of 95 BPM, and “YOUTH” is 91.5 BPM. To maintain a consistent vibe, I filtered for songs with tempos between 90 and 110 BPM.   Then I examined danceability.  Both songs have danceability scores between 0.62 and 0.75, so I filtered down to songs with a danceability score above 0.6.\nThis process gave me a list of about 28 artists.\n\n\n\n\n\n\n To narrow it down further, I filtered by acousticness.  “Closer” has an acousticness score of 0.414, and “YOUTH” is 0.0625.  To match the energy and feel of those tracks, I filtered for songs with acousticness at or below 0.42.   Most of these tracks fall under pop, dance, or house genres.  As a final step, I excluded artists that didn’t match this vibe—such as Chris Brown or Zac Brown Band.\nThis filtering process resulted in my final playlist of 16 songs, titled…"
+  },
+  {
+    "objectID": "mp03.html#good-vibes-2016-edition",
+    "href": "mp03.html#good-vibes-2016-edition",
+    "title": "The Ultimate Spotify Playlist",
+    "section": "Good Vibes, 2016 Edition",
+    "text": "Good Vibes, 2016 Edition\n   This curated collection captures the essence of mid-2010s pop and electronic music. Featuring tracks from artists like The Chainsmokers, Kygo, Troye Sivan, and Fifth Harmony, it offers a nostalgic journey through the upbeat and chill sounds that defined 2015 and 2016. A blend of synth-pop, tropical house, and mellow electronic beats, this playlist is perfect for relaxed listening sessions, evoking memories of summer evenings and carefree moments."
   }
 ]
