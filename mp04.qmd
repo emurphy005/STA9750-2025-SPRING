@@ -418,8 +418,6 @@ centroids <- centroids %>%
 ```
 And finally, I put it all together to create the graphic.
 ```{r}
-#| echo: false
-#| output: true
 #plot
 library(ggplot2)
 ggplot() +
@@ -443,4 +441,5 @@ ggplot() +
     ylim = c(24, 50)       
   )
 ```
+![](Map.png)
 
