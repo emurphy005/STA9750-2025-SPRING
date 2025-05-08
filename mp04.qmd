@@ -429,7 +429,7 @@ ggplot() +
     size = 0.3
   ) +
   scale_color_gradient2(
-    low = "blue", mid = "white", high = "red",
+    low = "blue", mid = "violet", high = "red",
     midpoint = 0, name = "Rightward Shift (change in #of votes)"
   ) +
   theme_minimal() +
@@ -441,5 +441,5 @@ ggplot() +
     ylim = c(24, 50)       
   )
 ```
-![](Map.png)
+![](Map2.png)
 

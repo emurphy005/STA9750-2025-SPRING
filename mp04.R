@@ -364,7 +364,7 @@ ggplot() +
     size = 0.3
   ) +
   scale_color_gradient2(
-    low = "blue", mid = "white", high = "red",
+    low = "blue", mid = "violet", high = "red",
     midpoint = 0, name = "Rightward Shift (#of votes"
   ) +
   theme_minimal() +
