@@ -25,7 +25,7 @@ For this report, a variety of datasets were used for the analysis.
 For noise complaints, we used the **311 Noise Complaints** dataset from NYC OpenData. This dataset compiles all 311 service requests from 2010 to the present. However, for this report, the focus will be from 2022-2025. This dataset included information such as, created date, closed date, complaint type, descriptor, location type, and incident address.
 <br>
 <br>
-In order to explore the socioeconomic factors, we used the **ACS, American Community Surveys** from the United States Census Bureau. This dataset incudes various information about city demographics, such as media household incomes, renter vs owner owned housing, education, and employment rates. 
+In order to explore the socioeconomic factors, we used the **ACS, American Community Surveys** from the United States Census Bureau. This dataset incudes various information about city demographics, such as median household incomes, renter vs owner owned housing, education, and employment rates. 
 <br>
 <br>
 As for exploring any relationship between noise and public safety, we used two datasets from NYC OpenData. The first is 
