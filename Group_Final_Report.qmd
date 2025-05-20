@@ -99,7 +99,7 @@ Here, a relatively small resident population still makes thousands of complaints
 <br>
 **Key takeaway:** Once we adjust for the number of residents, the most complaint‑intensive neighborhoods are actually those with a mix of commercial activity and a smallish resident population such as Times Square, Tribeca, and the East Village where each resident, on average, files more 311 noise reports than someone living in more suburban NTAs.
 
-For more in-depth analysis, please see individual report [HERE](https://j-lin07.github.io/STA9750-2025-SPRING/sta9750fp.html). 
+For more in-depth analysis, please see individual report [HERE](https://j-lin07.github.io/STA9750-2025-SPRING/sta9750fp.html).
 
 ## **Noise Complaints & Shooting Incidents**
 ### *Do areas with more shooting incidents have more/fewer noise complaints?*
