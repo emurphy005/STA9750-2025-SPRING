@@ -104,7 +104,7 @@ After combining the two shooting datasets and filtering down to reports between 
 #| echo: false
 shooting_glimpse <- full_shooting_2022_2025 |>
   head(10)|>
-  select(-20)
+  select(-21)
 datatable(shooting_glimpse,options=list(searching=FALSE,
                                              scrollY = "400px",
                                              scrollX = TRUE,
