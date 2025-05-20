@@ -103,8 +103,10 @@ After combining the two shooting datasets and filtering down to reports between 
 ```{r}
 #| echo: false
 shooting_glimpse <- full_shooting_2022_2025 |>
-  head(10)|>
-  select(-20)
+  head(10)
+if (ncol(shooting_glimpse) >= 20) {
+  shooting_glimpse <- shooting_glimpse [,-20]
+}
 datatable(shooting_glimpse,options=list(searching=FALSE,
                                              scrollY = "400px",
                                              scrollX = TRUE,
