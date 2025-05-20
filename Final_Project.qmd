@@ -161,7 +161,7 @@ After cleaning and filtering down the 311 noise complaint data, we are left with
 #| echo: false
 noise_glimpse <- noise_311_data_2022_2025 |>
   head(10)|>
-  select(-17)
+  select(-17, -20)
 datatable(noise_glimpse,options=list(searching=FALSE,
                                              scrollY = "400px",
                                              scrollX = TRUE,
