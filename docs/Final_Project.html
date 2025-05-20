@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring the Factors of New York City Noise Complaints – STA9750 2025 Spring Submission Material</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-71a306e5adce98516e0bef91e99219f9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">STA9750 2025 Spring Submission Material</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><strong>Introduction</strong></a></li>
+  <li><a href="#prior-research" id="toc-prior-research" class="nav-link" data-scroll-target="#prior-research"><strong>Prior Research</strong></a></li>
+  <li><a href="#acquiring-the-data" id="toc-acquiring-the-data" class="nav-link" data-scroll-target="#acquiring-the-data"><strong>Acquiring the Data</strong></a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis"><strong>Analysis</strong></a>
+  <ul class="collapse">
+  <li><a href="#report-locations" id="toc-report-locations" class="nav-link" data-scroll-target="#report-locations"><strong>Report Locations</strong></a></li>
+  <li><a href="#borough-locations" id="toc-borough-locations" class="nav-link" data-scroll-target="#borough-locations"><strong>Borough Locations</strong></a></li>
+  <li><a href="#time-of-day" id="toc-time-of-day" class="nav-link" data-scroll-target="#time-of-day"><strong>Time of Day</strong></a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions"><strong>Conclusions</strong></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploring the Factors of New York City Noise Complaints</h1>
+<p class="subtitle lead">311 Noise Complaints and NYC Shooting Incidents</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction"><strong>Introduction</strong></h2>
+<p>Noise is a major part of living in New York City. Cars going by, the subway rattling underground, different types of construction, and people going about their daily lives make up just a few of the sources for the constant level of noise in the city. It is inescapable. In 2024, New York residents filed over 700,000 noise complaints through 311, making it the most reported issue. Residential noise, which accounted for more that 356,000 complaints, was the most reported type of noise <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Simultaneously, 2024 marked the third straight year of decreases in shootings and homicides, with a total of 3,622 fewer crimes than the previous year <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. However, even with the reduction of overall shooting violence, there has been an increase in shooting crimes amongst juveniles <a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. This demonstrates there are still issues in the city with gun violence. Is there a potential connection between the two? Are there trends and patterns between the reports of shooting violence and noise complaints? This report, as a part of the wider group effort to analyze 311 noise data, will aim to look at the trends in noise complaints and reported shooting data to highlight the complex dynamics of urban life and the ongoing efforts required to enhance public safety and quality of life in the city.</p>
+</section>
+<section id="prior-research" class="level2">
+<h2 class="anchored" data-anchor-id="prior-research"><strong>Prior Research</strong></h2>
+<p>There have been a few previous studies done on the connection between noise and crime. One study done in 2023 and published in the Journal of Interpersonal Violence looked at noise complaints and land rezoning as a predictor of hate crimes <a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. By looking at crime in comparison to 311 data, the researchers were able to conclude that hate crimes are more likely in the neighborhoods where the noise complaints and land use rezoning are higher than the median.<br>
+<br> Another study done in 2022 and published in the Journal of Public Economics explored the connection between being exposed to noise pollution and amount of violent crime in those areas <a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. The study concluded that an increased exposure to noise pollution has led to an increase in violent crimes. This is due to the fact that noise poses a potential threat to human health and affects behavior.<br>
+<br> For this report, the focus will be on examining trends in both noise complaints and shooting incidents, specifically looking at exact location types, occurrence time of day, and borough locations. By identifying any overlapping trends, this report aims to highlight areas where the city can focus their efforts to improve police patrol efficiency, in order to help make the city safer and improve the quality of life for its residents.</p>
+</section>
+<section id="acquiring-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="acquiring-the-data"><strong>Acquiring the Data</strong></h2>
+<p>For this analysis, three sets of data were used. They are <strong><em>311 Noise Complaints</em></strong>, which contains 311 reports spanning from 2010-2025, <strong><em>NYPD Shooting Incident Data (Historic)</em></strong>, which list of every shooting incident that occurred in NYC from 2006 through the end of 2024, and <strong><em>NYPD Shooting Incident Data (Year To Date)</em></strong>, which lists of every shooting incident that occurred in NYC during the current calendar year (2025). <br> All of these data sets come from NYC Open Source Data and are very robust. Both the <strong><em>311 Noise Complaints</em></strong> data and the <strong><em>NYPD Shooting Incident Data (Historic)</em></strong> data are very large data sets (the former having millions of rows and the latter having thousands), so for the sake of this report the focus will be data between 2022-2024.</p>
+<p>After combining the two shooting datasets and filtering down to reports between 2022-2025, we are left with 1170 rows. Below is a glimpse at the first 10 rows.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-6efd5afdb2c56484a22d" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6efd5afdb2c56484a22d">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],["300412113","303898920","301565780","299382241","300131385","301806225","298877584","302972628","302197815","300131383"],["2025-02-01T00:00:00.000","2025-03-30T00:00:00.000","2025-02-23T00:00:00.000","2025-01-13T00:00:00.000","2025-01-27T00:00:00.000","2025-02-27T00:00:00.000","2025-01-04T00:00:00.000","2025-03-16T00:00:00.000","2025-03-06T00:00:00.000","2025-01-27T00:00:00.000"],["05:05:00","22:50:00","19:50:00","21:15:00","19:16:00","15:55:00","00:43:00","15:41:00","16:50:00","16:30:00"],["QUEENS","BROOKLYN","BRONX","MANHATTAN","BRONX","BRONX","BROOKLYN","BROOKLYN","BROOKLYN","QUEENS"],["OUTSIDE","INSIDE","OUTSIDE","OUTSIDE","OUTSIDE","OUTSIDE","OUTSIDE","OUTSIDE","OUTSIDE","INSIDE"],["104","75","49","30","47","48","75","81","63","107"],["0","0","0","0","0","0","0","0","0","0"],["STREET","DWELLING","STREET","STREET","STREET","STREET","COMMERCIAL","STREET","STREET","DWELLING"],["(null)","MULTI DWELL - APT BUILD","(null)","(null)","(null)","(null)","BAR/NIGHT CLUB","(null)","GAS STATION","MULTI DWELL - APT BUILD"],["N","Y","Y","N","N","N","N","N","N","Y"],["25-44","(null)","(null)","18-24","(null)","(null)","45-64","(null)","(null)","(null)"],["M","(null)","(null)","M","(null)","(null)","M","(null)","(null)","(null)"],["BLACK HISPANIC","(null)","(null)","BLACK HISPANIC","(null)","(null)","WHITE HISPANIC","(null)","(null)","(null)"],["25-44","65+","25-44","25-44","&lt;18","18-24","25-44","18-24","UNKNOWN","18-24"],["M","M","M","M","M","M","F","M","M","M"],["BLACK HISPANIC","BLACK","BLACK","BLACK HISPANIC","BLACK","BLACK","WHITE HISPANIC","BLACK","BLACK","BLACK"],["1013701","1017036","1020860","997512","1024745","1015108","1015628","1001627","1006460","1051246"],["195936","183890","251009","239558","262868","246825","186760","189572","169245","203301"],[null,"0.0","40.855571","40.824207","40.88809295982641","40.844108","40.679244","40.687","40.631196","40.724446"],[null,"0.0","-73.86766","-73.95208","-73.85354344676429","-73.88847","-73.886873","-73.937344","-73.919982","-73.758293"],{"type":[null,"Point","Point","Point","Point","Point","Point","Point","Point","Point"],"coordinates":[null,[0,0],[-73.86766,40.855571],[-73.95208,40.824207],[-73.85354344676429,40.88809295982641],[-73.88847,40.844108],[-73.88687299999999,40.679244],[-73.937344,40.687],[-73.919982,40.631196],[-73.75829299999999,40.724446]]},[null,null,"5","4","5","5","2","2","2","3"],[null,null,"12","23","2","43","37","49","8","16"],[null,null,"32","19","30","31","47","52","38","65"],[null,null,"11271","12428","11275","11269","17214","18181","13825","24336"],[null,null,"59","37","29","35","45","69","5","25"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>incident_key<\/th>\n      <th>occur_date<\/th>\n      <th>occur_time<\/th>\n      <th>boro<\/th>\n      <th>loc_of_occur_desc<\/th>\n      <th>precinct<\/th>\n      <th>jurisdiction_code<\/th>\n      <th>loc_classfctn_desc<\/th>\n      <th>location_desc<\/th>\n      <th>statistical_murder_flag<\/th>\n      <th>perp_age_group<\/th>\n      <th>perp_sex<\/th>\n      <th>perp_race<\/th>\n      <th>vic_age_group<\/th>\n      <th>vic_sex<\/th>\n      <th>vic_race<\/th>\n      <th>x_coord_cd<\/th>\n      <th>y_coord_cd<\/th>\n      <th>latitude<\/th>\n      <th>longitude<\/th>\n      <th>geocoded_column<\/th>\n      <th>:@computed_region_yeji_bk3q<\/th>\n      <th>:@computed_region_92fq_4b7q<\/th>\n      <th>:@computed_region_sbqj_enih<\/th>\n      <th>:@computed_region_efsh_h5xi<\/th>\n      <th>:@computed_region_f5dn_yrer<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"scrollY":"400px","scrollX":true,"scrollCollapse":true,"paging":false,"info":false,"columnDefs":[{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"incident_key","targets":1},{"name":"occur_date","targets":2},{"name":"occur_time","targets":3},{"name":"boro","targets":4},{"name":"loc_of_occur_desc","targets":5},{"name":"precinct","targets":6},{"name":"jurisdiction_code","targets":7},{"name":"loc_classfctn_desc","targets":8},{"name":"location_desc","targets":9},{"name":"statistical_murder_flag","targets":10},{"name":"perp_age_group","targets":11},{"name":"perp_sex","targets":12},{"name":"perp_race","targets":13},{"name":"vic_age_group","targets":14},{"name":"vic_sex","targets":15},{"name":"vic_race","targets":16},{"name":"x_coord_cd","targets":17},{"name":"y_coord_cd","targets":18},{"name":"latitude","targets":19},{"name":"longitude","targets":20},{"name":"geocoded_column","targets":21},{"name":":@computed_region_yeji_bk3q","targets":22},{"name":":@computed_region_92fq_4b7q","targets":23},{"name":":@computed_region_sbqj_enih","targets":24},{"name":":@computed_region_efsh_h5xi","targets":25},{"name":":@computed_region_f5dn_yrer","targets":26}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p><br> After cleaning and filtering down the 311 noise complaint data, we are left with 1000 rows. Below is a glimpse at the first 10 rows.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-77014c43072669fd9dd0" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-77014c43072669fd9dd0">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10"],["64906268","64905963","64897846","64897844","64905656","64902693","64906361","64899368","64904554","64907615"],["2025-05-11T01:50:42.000","2025-05-11T01:50:40.000","2025-05-11T01:50:34.000","2025-05-11T01:50:32.000","2025-05-11T01:50:27.000","2025-05-11T01:50:18.000","2025-05-11T01:50:08.000","2025-05-11T01:49:58.000","2025-05-11T01:49:58.000","2025-05-11T01:49:57.000"],["NYPD","NYPD","NYPD","NYPD","NYPD","NYPD","NYPD","NYPD","NYPD","NYPD"],["New York City Police Department","New York City Police Department","New York City Police Department","New York City Police Department","New York City Police Department","New York City Police Department","New York City Police Department","New York City Police Department","New York City Police Department","New York City Police Department"],["Noise - Residential","Noise - Street/Sidewalk","Noise - Street/Sidewalk","Noise - Residential","Noise - Residential","Noise - Commercial","Noise - Street/Sidewalk","Noise - Residential","Noise - Park","Noise - Residential"],["Loud Talking","Loud Talking","Loud Music/Party","Loud Talking","Loud Music/Party","Loud Music/Party","Loud Music/Party","Loud Music/Party","Loud Music/Party","Banging/Pounding"],["Residential Building/House","Street/Sidewalk","Street/Sidewalk","Residential Building/House","Residential Building/House","Club/Bar/Restaurant","Street/Sidewalk","Residential Building/House","Park/Playground","Residential Building/House"],["In Progress","In Progress","In Progress","In Progress","In Progress","In Progress","In Progress","In Progress","In Progress","In Progress"],["0 Unspecified","0 Unspecified","0 Unspecified","0 Unspecified","0 Unspecified","0 Unspecified","0 Unspecified","0 Unspecified","0 Unspecified","0 Unspecified"],["Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified"],["989183","997692","1028203","997517",null,"999754","997549","1008314",null,"1014887"],["205247","230057","215743","198539","184347","198391","239893","244952","235186","244356"],["Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Abraham Lincoln Playground","Unspecified"],["Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified","Unspecified"],["40.730030907580286","40.798119105317056","40.75873192725366","40.71161049424838",null,"40.711200632367984","40.82511640129965","40.83897912708756",null,"40.83732292404516"],["-73.9822013545737","-73.9514506158912","-73.84134575869068","-73.95214486458275",null,"-73.94407616862357","-73.95194761079188","-73.91303302669628",null,"-73.88928103790317"],{"type":["Point","Point","Point","Point",null,"Point","Point","Point",null,"Point"],"coordinates":[[-73.9822013545737,40.73003090758029],[-73.9514506158912,40.79811910531706],[-73.84134575869068,40.75873192725366],[-73.95214486458275,40.71161049424838],null,[-73.94407616862357,40.71120063236798],[-73.95194761079188,40.82511640129965],[-73.91303302669628,40.83897912708756],null,[-73.88928103790317,40.83732292404516]]},[null,"2025-05-11T02:03:32.000","2025-05-11T02:11:26.000",null,null,"2025-05-11T02:02:59.000","2025-05-11T02:16:51.000",null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>unique_key<\/th>\n      <th>created_date<\/th>\n      <th>agency<\/th>\n      <th>agency_name<\/th>\n      <th>complaint_type<\/th>\n      <th>descriptor<\/th>\n      <th>location_type<\/th>\n      <th>status<\/th>\n      <th>community_board<\/th>\n      <th>borough<\/th>\n      <th>x_coordinate_state_plane<\/th>\n      <th>y_coordinate_state_plane<\/th>\n      <th>park_facility_name<\/th>\n      <th>park_borough<\/th>\n      <th>latitude<\/th>\n      <th>longitude<\/th>\n      <th>location<\/th>\n      <th>resolution_action_updated_date<\/th>\n      <th>vehicle_type<\/th>\n      <th>closed_date<\/th>\n      <th>resolution_description<\/th>\n      <th>incident_zip<\/th>\n      <th>incident_address<\/th>\n      <th>street_name<\/th>\n      <th>cross_street_1<\/th>\n      <th>cross_street_2<\/th>\n      <th>intersection_street_1<\/th>\n      <th>intersection_street_2<\/th>\n      <th>address_type<\/th>\n      <th>city<\/th>\n      <th>landmark<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"scrollY":"400px","scrollX":true,"scrollCollapse":true,"paging":false,"info":false,"columnDefs":[{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"unique_key","targets":1},{"name":"created_date","targets":2},{"name":"agency","targets":3},{"name":"agency_name","targets":4},{"name":"complaint_type","targets":5},{"name":"descriptor","targets":6},{"name":"location_type","targets":7},{"name":"status","targets":8},{"name":"community_board","targets":9},{"name":"borough","targets":10},{"name":"x_coordinate_state_plane","targets":11},{"name":"y_coordinate_state_plane","targets":12},{"name":"park_facility_name","targets":13},{"name":"park_borough","targets":14},{"name":"latitude","targets":15},{"name":"longitude","targets":16},{"name":"location","targets":17},{"name":"resolution_action_updated_date","targets":18},{"name":"vehicle_type","targets":19},{"name":"closed_date","targets":20},{"name":"resolution_description","targets":21},{"name":"incident_zip","targets":22},{"name":"incident_address","targets":23},{"name":"street_name","targets":24},{"name":"cross_street_1","targets":25},{"name":"cross_street_2","targets":26},{"name":"intersection_street_1","targets":27},{"name":"intersection_street_2","targets":28},{"name":"address_type","targets":29},{"name":"city","targets":30},{"name":"landmark","targets":31}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="analysis" class="level2">
+<h2 class="anchored" data-anchor-id="analysis"><strong>Analysis</strong></h2>
+<p>There are different aspects of this data that is interesting when examining any connections or trends between noise complaints and shooting reports in NYC.</p>
+<section id="report-locations" class="level3">
+<h3 class="anchored" data-anchor-id="report-locations"><strong>Report Locations</strong></h3>
+<p>When examining the shooting and noise complaint data, it was to important to look at the different types of locations where the incidents take place. For example, within the shooting dataset there is a <strong>location description column</strong>. This column gives a brief description of the location, such as Multi-Dwelling, Bar/Nightclub, Gas Station, Grocery Store, etc.<br>
+<br> In the noise complaint data, there is a <strong>location type column</strong>, which gives the type of location, such as <strong>Residential Building/House</strong>, <strong>Street/Sidewalk</strong>, and <strong>Club/Bar/Restaurant</strong>.<br>
+<br> As shown in the chart below, the majority of shooting incidences take place at <strong>Multi-Dwell Public Houses</strong>, which are mostly considered to be low income housing, followed by <strong>Mult Dwell Apartment Buildings</strong> and <strong>Bar/Nigh Clubs</strong>.</p>
+<p><img src="Shooting_Incident_locations_blue.png" class="img-fluid"></p>
+<p>As for the noise complaints, the below chart demonstrates that <strong>Residential Building/House</strong> is the most common location type, followed closely by <strong>Street/Sidewalk</strong>.</p>
+<p><img src="Noise_location_description.png" class="img-fluid"></p>
+</section>
+<section id="borough-locations" class="level3">
+<h3 class="anchored" data-anchor-id="borough-locations"><strong>Borough Locations</strong></h3>
+<p>The distribution of shooting reports and noise complaints across the boroughs is shown in the following figures below.<br>
+<br> <strong>The Bronx</strong> has reported 425 shootings between 2022 and 2025, which is the highest amongst the boroughs.</p>
+<p><img src="Shooting Reports by Borough.png" class="img-fluid"> <br> For noise complaints across Boroughs, the below chart illustrates the distribution complaints. <strong>Queens</strong> has had <strong>357</strong> noise complaints. <strong>320</strong> of those complaints are due to loud music/partying.</p>
+<p><img src="Noise Complaints by Borough.png" class="img-fluid"></p>
+</section>
+<section id="time-of-day" class="level3">
+<h3 class="anchored" data-anchor-id="time-of-day"><strong>Time of Day</strong></h3>
+<p>When these incidents and complaints are happening during the day are also important factors to take in to consideration.<br>
+<br> For the shooting incidents, the most incidents are reported between <strong>6pm and 2am</strong>, peaking around <strong>10pm</strong>. This makes sense when looking at the location descriptions of shooting incidents, as one of the top locations was at bars/nightclubs, most of which have their prime business hours during the nighttime. Below is the distribution of shooting incidents by hour.</p>
+<p><img src="Shooting Incidents by Hour.png" class="img-fluid"> This has a lot of overlap with the most common times for noise complaints in NYC. Noise complaints tend to begin to rise <strong>around 8pm</strong>, peaking around <strong>11pm and midnight</strong>, and then decline into the morning hours <a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p>
+</section>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions"><strong>Conclusions</strong></h2>
+<p>According to the data, there are multiple trends that connect noise complaints and shooting incidents in NYC. As stated in the analysis above, most noise complaints are reported to be happening on the street/sidewalk or in a residential home. This is very similar to shooting incidents reported, as the majority are reported to be at multi dwelling public houses or apartment buildings. There are also similar trends for the time of day these events occur. Both of these have the most occurrences during the nighttime hours, with their peaks being around 10pm-12am. However, when you zoom out to look at the reported incidents at a borough level, there is a difference of where these events are occurring. Most shooting incidents are happening in the Bronx followed by Brooklyn, while for noise complaints, the majority are concentrated in Queens.<br>
+<br> It is important to be aware of these trends and overlaps in order to keep the city safe. An ongoing issue discussed in the public space is the amount of police presence around the city. Many people, including Mayor Adams and Governor Hochul believe that an increase in police presence is necessary. While others disagree and believe the money should be used to help provide mental health help and other services to the homeless and other members of the city in need. The police department is typical the agency to respond to both of these events, so knowing where there is overlap and where the increases are can help the city be more efficient with their placement of police patrols, which could help with lowering costs to be allocated to other initiatives.<br>
+<br> For future work, it would be interesting to look at the connections between crime and specific sources of noise pollution. For example, there is an ongoing conversation about violence in the subway stations and on trains. Are there any connections bewteen the amount of noise in the subway with the amount of crime that is present? Or do areas that have a lot of noise due to construction have a higher level of violence. Also it would be interesting to look further into the specific demographics involved with violent crimes to see if they experience higher levels of noise pollution at a more constant rate than other groups.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>https://www.fox5ny.com/news/noise-tops-nycs-311-complaints-list-2024<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>https://www.nyc.gov/site/nypd/news/pr001/crime-down-across-new-york-city-2024-3-662-fewer-crimes<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>https://nypost.com/2025/04/26/us-news/number-of-nyc-teens-shot-skyrockets-nypd-data-shows/?utm_source=chatgpt.com<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>https://journals.sagepub.com/doi/abs/10.1177/08862605231158756?mi=ehikzz<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>https://www.mocoquietskies.org/journalism/noise-pollution-and-violent-crime-journal-of-public-economics-sept-23-2022?utm_source=chatgpt.com<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>https://www.newyorker.com/tech/annals-of-technology/mapping-new-york-noise-complaints<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/emurphy005\.github\.io\/?var:course\.repo\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

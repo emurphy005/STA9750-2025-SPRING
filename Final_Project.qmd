@@ -1,0 +1,325 @@
+---
+title: "Exploring the Factors of New York City Noise Complaints"
+subtitle: "311 Noise Complaints and NYC Shooting Incidents"
+format:
+  html:
+    toc: true
+---
+
+## **Introduction**
+Noise is a major part of living in New York City. Cars going by, the subway rattling underground, different types of construction, and people going about their daily lives make up just a few of the sources for the constant level of noise in the city. It is inescapable. In 2024, New York residents filed over 700,000 noise complaints through 311, making it the most reported issue. Residential noise, which accounted for more that 356,000 complaints, was the most reported type of noise [^1]. Simultaneously, 2024 marked the third straight year of decreases in shootings and homicides, with a total of 3,622 fewer crimes than the previous year [^2]. However, even with the reduction of overall shooting violence, there has been an increase in shooting crimes amongst juveniles [^3]. This demonstrates there are still issues in the city with gun violence. Is there a potential connection between the two? Are there trends and patterns between the reports of shooting violence and noise complaints? This report, as a part of the wider group effort to analyze 311 noise data, will aim to look at the trends in noise complaints and reported shooting data to highlight the complex dynamics of urban life and the ongoing efforts required to enhance public safety and quality of life in the city.
+
+## **Prior Research**
+There have been a few previous studies done on the connection between noise and crime. One study done in 2023 and published in the Journal of Interpersonal Violence looked at noise complaints and land rezoning as a predictor of hate crimes [^4]. By looking at crime in comparison to 311 data, the researchers were able to conclude that hate crimes are more likely in the neighborhoods where the noise complaints and land use rezoning are higher than the median.   
+<br>
+Another study done in 2022 and published in the Journal of Public Economics explored the connection between being exposed to noise pollution and amount of violent crime in those areas [^5]. The study concluded that an increased exposure to noise pollution has led to an increase in violent crimes. This is due to the fact that noise poses a potential threat to human health and affects behavior.    
+<br>
+For this report, the focus will be on examining trends in both noise complaints and shooting incidents, specifically looking at exact location types, occurrence time of day, and borough locations. By identifying any overlapping trends, this report aims to highlight areas where the city can focus their efforts to improve police patrol efficiency, in order to help make the city safer and improve the quality of life for its residents.
+
+## **Acquiring the Data**
+For this analysis, three sets of data were used. They are ***311 Noise Complaints***, which contains 311 reports spanning from 2010-2025, ***NYPD Shooting Incident Data (Historic)***, which list of every shooting incident that occurred in NYC from 2006 through the end of 2024, and ***NYPD Shooting Incident Data (Year To Date)***, which lists of every shooting incident that occurred in NYC during the current calendar year (2025). 
+<br>
+All of these data sets come from NYC Open Source Data and are very robust. Both the ***311 Noise Complaints*** data and the ***NYPD Shooting Incident Data (Historic)*** data are very large data sets (the former having millions of rows and the latter having thousands), so for the sake of this report the focus will be data between 2022-2024. 
+```{r}
+#| include: false
+# Load libraries
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(DT)
+library(lubridate)
+library(ggplot2)
+
+#Getting the Shooting Data - year to date
+#setting the directory path
+dir_path <- "final_project"
+local_file <- file.path(dir_path, "shooting_data.json")
+
+# Check if the directory exists, create it if not
+if (!dir.exists(dir_path)) {
+  dir.create(dir_path)
+}
+
+# Check if the file exists in the directory
+if (!file.exists(local_file)) {
+  message("Downloading data from NYC Open Data...")
+  
+  # Download from API (limit for testing; adjust or remove limit as needed)
+  url <- "https://data.cityofnewyork.us/resource/5ucz-vwe8.json"
+  response <- GET(url)
+  
+  # Save raw JSON to the specified directory
+  write(content(response, "text"), local_file)
+} else {
+  message("Using previously downloaded data.")
+}
+
+# Load the data from the local file
+shooting_data_2025 <- fromJSON(local_file)
+
+#get the shooting data - historic
+ir_path <- "final_project"
+local_file <- file.path(dir_path, "shooting_data_historic.json")
+
+# Check if the directory exists, create it if not
+if (!dir.exists(dir_path)) {
+  dir.create(dir_path)
+}
+
+# Check if the file exists in the directory
+if (!file.exists(local_file)) {
+  message("Downloading data from NYC Open Data...")
+  
+  # Download from the new API endpoint
+  url <- "https://data.cityofnewyork.us/resource/833y-fsy8.json"  # Updated URL
+  response <- GET(url)
+  
+  # Check if the request was successful
+  if (status_code(response) == 200) {
+    # Save raw JSON to the specified directory
+    write(content(response, "text"), local_file)
+  } else {
+    stop("Failed to download data, status code: ", status_code(response))
+  }
+} else {
+  message("Using previously downloaded data.")
+}
+
+# Load the data from the local file
+shooting_data_historic <- fromJSON(local_file)
+
+#Joining the shooting data into one file
+shooting_data_2025$statistical_murder_flag <- as.character(shooting_data_2025$statistical_murder_flag)
+shooting_data_historic$statistical_murder_flag <- as.character(shooting_data_historic$statistical_murder_flag)
+
+full_shooting <- bind_rows(shooting_data_2025, shooting_data_historic)
+
+# Filter out rows with 'occur_day' before 1/1/2022
+full_shooting_2022_2025 <- full_shooting |>
+  filter(occur_date >="2021-12-31T00:00:00.000")
+#1170 rows 
+```
+After combining the two shooting datasets and filtering down to reports between 2022-2025, we are left with 1170 rows. Below is a glimpse at the first 10 rows. 
+```{r}
+#| echo: false
+shooting_glimpse <- full_shooting_2022_2025 |>
+  head(10)
+datatable(shooting_glimpse,options=list(searching=FALSE,
+                                             scrollY = "400px",
+                                             scrollX = TRUE,
+                                             scrollCollapse = TRUE,
+                                             paging = FALSE,
+                                             info=FALSE))
+```
+
+```{r}
+#| include: false
+#Get the 311 data 
+# Set directory and local file path
+dir_path <- "final_project"
+local_file <- file.path(dir_path, "noise_311_data.json")  # Updated filename
+
+# Check if the directory exists, create it if not
+if (!dir.exists(dir_path)) {
+  dir.create(dir_path)
+}
+
+# Check if the file already exists
+if (!file.exists(local_file)) {
+  message("Downloading 311 Noise Complaint data from NYC Open Data...")
+  
+  # Download from the 311 noise complaint dataset
+  url <- "https://data.cityofnewyork.us/resource/p5f6-bkga.json"  # New dataset URL
+  response <- GET(url)
+  
+  # Check for successful response
+  if (status_code(response) == 200) {
+    # Save JSON to file
+    write(content(response, "text"), local_file)
+  } else {
+    stop("Failed to download data. Status code: ", status_code(response))
+  }
+} else {
+  message("Using previously downloaded 311 data.")
+}
+
+# Load the data
+noise_311_data <- fromJSON(local_file)
+
+#filter to 2022
+noise_311_data_2022_2025 <- noise_311_data|>
+  filter(created_date >="2021-12-31T00:00:00.000")
+nrow(noise_311_data_2022_2025)
+#1000 rows
+```
+<br>
+After cleaning and filtering down the 311 noise complaint data, we are left with 1000 rows. Below is a glimpse at the first 10 rows. 
+```{r}
+#| echo: false
+noise_glimpse <- noise_311_data_2022_2025 |>
+  head(10)
+datatable(noise_glimpse,options=list(searching=FALSE,
+                                             scrollY = "400px",
+                                             scrollX = TRUE,
+                                             scrollCollapse = TRUE,
+                                             paging = FALSE,
+                                             info=FALSE))
+
+
+
+```
+## **Analysis**
+There are different aspects of this data that is interesting when examining any connections or trends between noise complaints and shooting reports in NYC. 
+
+### **Report Locations**
+When examining the shooting and noise complaint data, it was to important to look at the different types of locations where the incidents take place. For example, within the shooting dataset there is a **location description column**. This column gives a brief description of the location, such as Multi-Dwelling, Bar/Nightclub, Gas Station, Grocery Store, etc.   
+<br>
+In the noise complaint data, there is a **location type column**, which gives the type of location, such as **Residential Building/House**, **Street/Sidewalk**, and **Club/Bar/Restaurant**.       
+<br>
+As shown in the chart below, the majority of shooting incidences take place at **Multi-Dwell Public Houses**, which are mostly considered to be low income housing, followed by **Mult Dwell Apartment Buildings** and **Bar/Nigh Clubs**. 
+```{r}
+#| include: false 
+#Exploration of shooting data:
+loc_description <- full_shooting_2022_2025|>
+  filter(location_desc != "(null)")|>
+  count(location_desc)
+
+loc_description
+
+ggplot(loc_description, aes(x = location_desc, y = n)) +
+  geom_bar(stat = "identity", fill = "deepskyblue1" ) +
+  labs(title = "Incident Locations", x = 'Location Description', y = "Number of Incidents ") +
+  theme_minimal()+
+  theme(
+    panel.grid.minor = element_blank()
+  )+
+  coord_flip()
+```
+![](Shooting_Incident_locations_blue.png)
+
+As for the noise complaints, the below chart demonstrates that **Residential Building/House** is the most common location type, followed closely by **Street/Sidewalk**. 
+```{r}
+#| include: false 
+#noise complaint type 
+loc_description_noise <- noise_311_data_2022_2025|>
+  count(location_type)|>
+  rename( Complaints = n)
+#plot
+ggplot(loc_description_noise, aes(x = location_type, y = Complaints)) +
+  geom_bar(stat = "identity", fill = "orange" ) +
+  labs(title = "Location of Complaints", x = 'Location Description', y = "Number of Complaints ") +
+  theme_minimal()+
+  theme(
+    panel.grid.minor = element_blank()
+  )+
+  coord_flip()
+
+```
+![](Noise_location_description.png) 
+
+### **Borough Locations**
+The distribution of shooting reports and noise complaints across the boroughs is shown in the following figures below.   
+<br>
+**The Bronx** has reported 425 shootings between 2022 and 2025, which is the highest amongst the boroughs. 
+```{r}
+#| include: false 
+#borough 
+borough <- full_shooting_2022_2025|>
+  count(boro)|>
+  rename( 'Incidents' = n)
+
+ggplot(borough, aes(x = boro, y = Incidents, fill = Incidents)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Shooting Reports by Borough", x = 'Borough', y = "Number of Incidents ") +
+  scale_fill_gradient(low = "lightblue", high = "darkblue") +
+  theme_minimal()+
+  theme(
+    panel.grid.minor = element_blank()
+  )+
+  coord_flip()
+```
+![](Shooting Reports by Borough.png)
+<br>
+For noise complaints across Boroughs, the below chart illustrates the distribution complaints. **Queens** has had **357** noise complaints. **320** of those complaints are due to loud music/partying. 
+```{r}
+#| include: false 
+#noise complaints by borough
+borough_noise <- noise_311_data_2022_2025|>
+  filter(borough != "Unspecified")|>
+  count(borough)|>
+  rename( 'Complaints' = n)
+
+#plot
+ggplot(borough_noise, aes(x = borough, y = Complaints, fill = Complaints)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Noise Complaints by Borough", x = 'Borough', y = "Number of Complaints") +
+  scale_fill_gradient(low = "orange", high = "darkorange4") +
+  theme_minimal()+
+  theme(
+    panel.grid.minor = element_blank()
+  )+
+  coord_flip()
+
+#queens description count
+borough_noise <- noise_311_data_2022_2025|>
+  filter(borough != "Unspecified", borough == "QUEENS")|>
+  count(descriptor)
+
+```
+![](Noise Complaints by Borough.png)
+
+### **Time of Day**
+When these incidents and complaints are happening during the day are also important factors to take in to consideration.  
+<br>
+For the shooting incidents, the most incidents are reported between **6pm and 2am**, peaking around **10pm**. This makes sense when looking at the location descriptions of shooting incidents, as one of the top locations was at bars/nightclubs, most of which have their prime business hours during the nighttime. Below is the distribution of shooting incidents by hour. 
+```{r}
+#| include: false
+time_hour <- full_shooting_2022_2025 |>
+  mutate(Hour = hour(hms(occur_time)))
+
+hourly_counts <- time_hour |>
+  group_by(Hour)|>
+  summarise(incident_count = n())
+
+ggplot(hourly_counts, aes(x = Hour, y = incident_count)) +
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, color = "deepskyblue", linewidth = 1.2) +
+  scale_x_continuous(
+    breaks = seq(0, 23, by = 2),
+    limits = c(0, 23)
+  ) +
+  labs(
+    x = "Hour of Day (24hrs)",
+    y = "Number of Incidents",
+    title = "Shooting Incidents by Hour"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 12),
+    panel.grid.major = element_line(color = "grey90"),
+    panel.grid.minor = element_blank()
+  )
+```
+![](Shooting Incidents by Hour.png)
+This has a lot of overlap with the most common times for noise complaints in NYC. Noise complaints tend to begin to rise **around 8pm**, peaking around **11pm and midnight**, and then decline into the morning hours [^6]. 
+
+## **Conclusions**
+According to the data, there are multiple trends that connect noise complaints and shooting incidents in NYC. As stated in the analysis above, most noise complaints are reported to be happening on the street/sidewalk or in a residential home. This is very similar to shooting incidents reported, as the majority are reported to be at multi dwelling public houses or apartment buildings. There are also similar trends for the time of day these events occur. Both of these have the most occurrences during the nighttime hours, with their peaks being around 10pm-12am. 
+However, when you zoom out to look at the reported incidents at a borough level, there is a difference of where these events are occurring. Most shooting incidents are happening in the Bronx followed by Brooklyn, while for noise complaints, the majority are concentrated in Queens.      
+<br>
+It is important to be aware of these trends and overlaps in order to keep the city safe. An ongoing issue discussed in the public space is the amount of police presence around the city. Many people, including Mayor Adams and Governor Hochul believe that an increase in police presence is necessary. While others disagree and believe the money should be used to help provide mental health help and other services to the homeless and other members of the city in need. The police department is typical the agency to respond to both of these events, so knowing where there is overlap and where the increases are can help the city be more efficient with their placement of police patrols, which could help with lowering costs to be allocated to other initiatives.      
+<br>
+For future work, it would be interesting to look at the connections between crime and specific sources of noise pollution. For example, there is an ongoing conversation about violence in the subway stations and on trains. Are there any connections bewteen the amount of noise in the subway with the amount of crime that is present? Or do areas that have a lot of noise due to construction have a higher level of violence. Also it would be interesting to look further into the specific demographics involved with violent crimes to see if they experience higher levels of noise pollution at a more constant rate than other groups. 
+
+[^1]: https://www.fox5ny.com/news/noise-tops-nycs-311-complaints-list-2024
+[^2]: https://www.nyc.gov/site/nypd/news/pr001/crime-down-across-new-york-city-2024-3-662-fewer-crimes
+[^3]: https://nypost.com/2025/04/26/us-news/number-of-nyc-teens-shot-skyrockets-nypd-data-shows/?utm_source=chatgpt.com
+[^4]: https://journals.sagepub.com/doi/abs/10.1177/08862605231158756?mi=ehikzz
+[^5]: https://www.mocoquietskies.org/journalism/noise-pollution-and-violent-crime-journal-of-public-economics-sept-23-2022?utm_source=chatgpt.com
+[^6]: https://www.newyorker.com/tech/annals-of-technology/mapping-new-york-noise-complaints
+
+
+
+
+
