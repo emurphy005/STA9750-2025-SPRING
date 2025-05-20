@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exploring the Factors of New York City Noise Complaints – STA9750 2025 Spring Submission Material</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-71a306e5adce98516e0bef91e99219f9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">STA9750 2025 Spring Submission Material</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><strong>Introduction</strong></a></li>
+  <li><a href="#the-data" id="toc-the-data" class="nav-link" data-scroll-target="#the-data"><strong>The Data</strong></a></li>
+  <li><a href="#previous-studies" id="toc-previous-studies" class="nav-link" data-scroll-target="#previous-studies"><strong>Previous Studies</strong></a></li>
+  <li><a href="#geographic-distribution" id="toc-geographic-distribution" class="nav-link" data-scroll-target="#geographic-distribution"><strong>Geographic Distribution</strong></a>
+  <ul class="collapse">
+  <li><a href="#which-neighborhoods-or-boroughs-have-the-highest-density-of-noise-complaints" id="toc-which-neighborhoods-or-boroughs-have-the-highest-density-of-noise-complaints" class="nav-link" data-scroll-target="#which-neighborhoods-or-boroughs-have-the-highest-density-of-noise-complaints"><em>Which neighborhoods or boroughs have the highest density of noise complaints?</em></a></li>
+  </ul></li>
+  <li><a href="#noise-complaints-shooting-incidents" id="toc-noise-complaints-shooting-incidents" class="nav-link" data-scroll-target="#noise-complaints-shooting-incidents"><strong>Noise Complaints &amp; Shooting Incidents</strong></a>
+  <ul class="collapse">
+  <li><a href="#do-areas-with-more-shooting-incidents-have-morefewer-noise-complaints" id="toc-do-areas-with-more-shooting-incidents-have-morefewer-noise-complaints" class="nav-link" data-scroll-target="#do-areas-with-more-shooting-incidents-have-morefewer-noise-complaints"><em>Do areas with more shooting incidents have more/fewer noise complaints?</em></a></li>
+  </ul></li>
+  <li><a href="#temporal-patterns" id="toc-temporal-patterns" class="nav-link" data-scroll-target="#temporal-patterns"><strong>Temporal Patterns</strong></a>
+  <ul class="collapse">
+  <li><a href="#how-do-noise-compants-vary-by-time-of-day-day-of-week-or-season" id="toc-how-do-noise-compants-vary-by-time-of-day-day-of-week-or-season" class="nav-link" data-scroll-target="#how-do-noise-compants-vary-by-time-of-day-day-of-week-or-season"><em>How do noise compants vary by time of day, day of week, or season?</em></a></li>
+  <li><a href="#summer-brings-peak-noise-concerns" id="toc-summer-brings-peak-noise-concerns" class="nav-link" data-scroll-target="#summer-brings-peak-noise-concerns">Summer Brings Peak Noise Concerns</a></li>
+  </ul></li>
+  <li><a href="#socioeconomic-factors" id="toc-socioeconomic-factors" class="nav-link" data-scroll-target="#socioeconomic-factors"><strong>Socioeconomic Factors</strong></a>
+  <ul class="collapse">
+  <li><a href="#how-to-socioeconomic-factors-relate-to-noise-complaint-frequency" id="toc-how-to-socioeconomic-factors-relate-to-noise-complaint-frequency" class="nav-link" data-scroll-target="#how-to-socioeconomic-factors-relate-to-noise-complaint-frequency"><em>How to socioeconomic factors relate to noise complaint frequency?</em></a></li>
+  </ul></li>
+  <li><a href="#summary-of-conclusions" id="toc-summary-of-conclusions" class="nav-link" data-scroll-target="#summary-of-conclusions"><strong>Summary of Conclusions</strong></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploring the Factors of New York City Noise Complaints</h1>
+<p class="subtitle lead">Noise Busters: Erin Murphy, Maria Desouza, Jeanne Lin, &amp; Augustine Korang</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction"><strong>Introduction</strong></h2>
+<p>When you live in New York City, you are surrounded by noise. Cars going by, the subway rattling underground, different types of construction, and people going about their daily lives make up just a few of the sources for the constant level of noise in the city. But what happens when the noise levels become too much? How are these problems solved? To report a noise complaint, New York City residents can report the disturbance to 311, which is a non-emergency line and online portal for New York City residents to access City government services and information. This includes dealing with noise complaints. <br> In 2024, New York residents filed over 700,000 noise complaints through 311, making it the most reported issue. Residential noise, which accounted for more that 356,000 complaints, was the most reported type of noise 1. Noise in general is a top concern when it comes to the impact of the quality of life, public health, and neighborhood satisfaction. This report will aim to explore noise complaints in New York City.<br>
+<br> Specifically, our overarching question is:<br>
+<strong><em>How do various factors relate to the frequency and distribution of 311 noise complaints in New York City</em></strong><br>
+<br> In order to achieve this, this report will dive deeper into the following specific factors and questions:<br>
+- <strong>Geographic Distribution:</strong> Which neighborhoods or boroughs have the highest density of noise complaints?<br>
+- <strong>Public Safety:</strong> Do areas with more shooting incidents have more/fewer noise complaints?<br>
+- <strong>Temporal Patterns:</strong> How do noise complaints vary by time of day, day of week, or season?<br>
+- <strong>Socioeconomic Factors</strong>: How to socioeconomic factors relate to noise complaint frequency?</p>
+</section>
+<section id="the-data" class="level2">
+<h2 class="anchored" data-anchor-id="the-data"><strong>The Data</strong></h2>
+<p>For this report, a variety of datasets were used for the analysis.<br>
+<br> For noise complaints, we used the <strong>311 Noise Complaints</strong> dataset from NYC OpenData. This dataset compiles all 311 service requests from 2010 to the present. However, for this report, the focus will be from 2022-2025. This dataset included information such as, created date, closed date, complaint type, descriptor, location type, and incident address. <br> <br> In order to explore the socioeconomic factors, we used the <strong>ACS, American Community Surveys</strong> from the United States Census Bureau. This dataset incudes various information about city demographics, such as media household incomes, renter vs owner owned housing, education, and employment rates. <br> <br> As for exploring any relationship between noise and public safety, we used two datasets from NYC OpenData. The first is <strong>NYPD Shooting Incident Data (Year to Date)</strong>, which every shooting incident that occurs in NYC during the current calendar year. The second is <strong>NYPD Shooting Incident Data (Historic)</strong>, which list every shooting incident that occurred in NYC going back to 2006 through the end of the previous calendar year. As mentioned previously, we chose to focus on 2022-2025, so only a portion of this data set was used. Both datasets include information such as occurance date, ccurrence time, location of the ccurrence, location description, and which borough it was in.</p>
+</section>
+<section id="previous-studies" class="level2">
+<h2 class="anchored" data-anchor-id="previous-studies"><strong>Previous Studies</strong></h2>
+<p>Before diving in to our analysis, it was important to review previous work done on this topic to see what has been said already and what gaps there are in existing literature. Findings from previous studies suggest there is a significant impact of socioeconomic factors including demographic, job-related, property and deprivation aspects on noise complaints. While there is evidence of a general association between noise pollution and violent crime (some of which are outlined in <a href="https://emurphy005.github.io/STA9750-2025-SPRING/Final_Project.html">this report</a>, it remains unclear whether neighborhoods with more shooting incidents or high police presence exhibit higher or lower rates of 311 noise complaints. This report will attempt to explore this link. Also, there has been a limited scope of existing NYC studies using 311 data. Most studies that use 311 data have predominately focused on one or a few socioeconomic indicators. This report attempts to integrate a comprehensive set of socioeconomic indicators, including housing characteristics that are often overlooked in NYC noise complain analysis.</p>
+</section>
+<section id="geographic-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="geographic-distribution"><strong>Geographic Distribution</strong></h2>
+<section id="which-neighborhoods-or-boroughs-have-the-highest-density-of-noise-complaints" class="level3">
+<h3 class="anchored" data-anchor-id="which-neighborhoods-or-boroughs-have-the-highest-density-of-noise-complaints"><em>Which neighborhoods or boroughs have the highest density of noise complaints?</em></h3>
+<section id="key-findings-by-measure" class="level4">
+<h4 class="anchored" data-anchor-id="key-findings-by-measure">Key Findings by Measure</h4>
+<p><br> <em>Per Square Mile</em><br>
+<strong>Top Neighborhoods:</strong><br>
+1. East Village<br>
+2. Lower East Side<br>
+3. Midtown/Hell’s Kitchen</p>
+<p><strong>Why They Stand Out:</strong> Small, tightly packed areas with lots of late-night activity (bars, clubs, restaurants), generating a huge number of calls in a tiny footprint. <br> <br> <em>Per 1,000 Residents</em>.<br>
+<strong>Top Neighborhoods:</strong><br>
+1. Time Square/Herald Square<br>
+2. Financial District (Tribeca)<br>
+3. East Village</p>
+<p><strong>Why They Stand Out:</strong> Here, a relatively small resident population still makes thousands of complaints meaning each person is calling far more often than in a typical neighborhood.</p>
+<p><strong>Borough‑Level Takeaway</strong><br>
+- Manhattan dominates every ranking. Its nightlife hubs and commercial corridors consistently top both density charts.<br>
+- Brooklyn’s trendiest corners (Williamsburg &amp; Bushwick) form a clear second tier; busy enough to show up once we adjust for land size, but not quite at Manhattan’s levels.<br>
+- Outer boroughs (Queens, the Bronx, Staten Island) drop to the bottom once we account for how big and how populous they are, lots of land or people, but relatively fewer complaints per unit. <br></p>
+<p><img src="311noisecomplaintdensityRplot.png" class="img-fluid"> <strong>What is shown:</strong> The classic “heat” map of absolute volume.<br>
+<strong>Top NTAs</strong> (brightest yellow/orange):<br>
+- Manhattan Core (Lower East Side, East Village, Midtown)<br>
+- Brooklyn pockets around Williamsburg and Bushwick<br>
+- To a lesser extent, parts of Queens (Long Island City/Astoria)<br>
+<br> <strong>Key takeaway:</strong> This confirms where people are calling 311 most often but raw counts conflate large, dense districts (lots of residents and businesses) with true “noisiness.” <br> <img src="complaintspersqmileRplot.png" class="img-fluid"> <strong>What is shown:</strong> Compact neighborhoods light up even brighter once we account for land area.<br>
+<strong>Highest densities</strong> (&gt;1,500 complaints/sq mi):<br>
+- East Village &amp; Lower East Side (Manhattan CD3 &amp; CD1)<br>
+- Midtown &amp; Hell’s Kitchen corridor (CD5)<br>
+<strong>Strong runners‑up</strong> (800–1,200 complaints/sq mi):<br>
+- Williamsburg &amp; Bushwick (Brooklyn CD1 &amp; CD4)<br>
+<strong>Moderate</strong> (300–600 complaints/sq mi):<br>
+- Selected NTAs in Queens (e.g., Long Island City, Astoria) and the Bronx<br>
+<strong>Lowest densities</strong> (&lt;100 complaints/sq mi):<br>
+- Almost all of Staten Island and outer Queens</p>
+<p><strong>Key takeaway:</strong> When we control for size, Manhattan’s nightlife and mixed‑use neighborhoods dominate, with a handful of Brooklyn NTAs showing elevated but secondary densities. <br> <img src="complaintsper1kRplot.png" class="img-fluid"> <strong>What is shown:</strong> Complaint counts relative to the number of people living there revealing where residents (vs.&nbsp;visitors or businesses) are most likely to call 311.<br>
+<strong>Top per‑capita NTAs</strong> (4,000–6,000+ complaints per 1,000 residents):<br>
+- Commercial/Entertainment Districts in Manhattan—especially the Financial District/Tribeca and Times Square/Herald Square areas, where a smaller resident base files a disproportionately high volume.<br>
+- East Village also remains prominent, reflecting an active, complaint‑prone residential population.<br>
+<strong>Secondary per‑capita hotspots</strong> (2,000–4,000 per1,000):<br>
+- Lower East Side, Hell’s Kitchen, and select Brooklyn NTAs like Bushwick.<br>
+<strong>Lowest per‑capita</strong> (&lt;500 per 1,000):<br>
+- Large, stable residential NTAs in outer boroughs (Staten Island, much of Queens and the Bronx).<br>
+<br> <strong>Key takeaway:</strong> Once we adjust for the number of residents, the most complaint‑intensive neighborhoods are actually those with a mix of commercial activity and a smallish resident population such as Times Square, Tribeca, and the East Village where each resident, on average, files more 311 noise reports than someone living in more suburban NTAs.</p>
+<p>For more in-depth analysis, please see individual report HERE.</p>
+</section>
+</section>
+</section>
+<section id="noise-complaints-shooting-incidents" class="level2">
+<h2 class="anchored" data-anchor-id="noise-complaints-shooting-incidents"><strong>Noise Complaints &amp; Shooting Incidents</strong></h2>
+<section id="do-areas-with-more-shooting-incidents-have-morefewer-noise-complaints" class="level3">
+<h3 class="anchored" data-anchor-id="do-areas-with-more-shooting-incidents-have-morefewer-noise-complaints"><em>Do areas with more shooting incidents have more/fewer noise complaints?</em></h3>
+<p>When analyzing the connections between the NYPD Shooting data and the 311 noise complaints there a few trends that start to appear. The first trend is in the descriptions of the physical locations of the events.<br>
+As shown in the chart below, most shooting incidences take place at <strong>Multi-Dwell Public Houses</strong>, which are mostly considered to be low-income housing, followed by <strong>Mult Dwell Apartment Buildings</strong> and <strong>Bar/Nigh Clubs</strong>. <img src="Shooting_Incident_locations_blue.png" class="img-fluid"> <br> As for the noise complaints, the below chart demonstrates that <strong>Residential Building/House</strong> is the most common location type, followed closely by <strong>Street/Sidewalk</strong>. <img src="Noise_location_description.png" class="img-fluid"> A key takeaway is that there are similarities between the types of locations where these events tend to occur. This can be useful when looking at NYPD patrol routes, as they are the primary agency that responds to both of these types of incidents. They can use this information to be more efficient on where they are sending their officers out to patrol.</p>
+<p>For more in-depth analysis, please see individual report <a href="https://emurphy005.github.io/STA9750-2025-SPRING/Final_Project.html">HERE</a>.</p>
+</section>
+</section>
+<section id="temporal-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="temporal-patterns"><strong>Temporal Patterns</strong></h2>
+<section id="how-do-noise-compants-vary-by-time-of-day-day-of-week-or-season" class="level3">
+<h3 class="anchored" data-anchor-id="how-do-noise-compants-vary-by-time-of-day-day-of-week-or-season"><em>How do noise compants vary by time of day, day of week, or season?</em></h3>
+</section>
+<section id="summer-brings-peak-noise-concerns" class="level3">
+<h3 class="anchored" data-anchor-id="summer-brings-peak-noise-concerns">Summer Brings Peak Noise Concerns</h3>
+<p>When analyzing temporal patterns, we found a dramatic variation in noise complaints throughout the year, with summer months (June-August) showing the highest volumes and winter months (December-February) showing the lowest. August represents the peak month with more than twice as many complaints as January.<br>
+This seasonal pattern likely reflects several interacting factors:<br>
+- Increased outdoor activity during warmer months<br>
+- Open windows in summer allowing more noise transmission<br>
+- Extended daylight hours lengthening the period of active noise generation<br>
+- More social gatherings and public events during summer months<br>
+<br> The seasonal pattern connects directly to our socioeconomic findings. As Vargas and Klein (2022) noted, “Seasonal variations in noise complaints are moderated by neighborhood characteristics, with higher-income areas maintaining more consistent reporting patterns across seasons.” This suggests that while actual noise may follow similar seasonal patterns across the city, reporting behavior varies based on socioeconomic factors. <br> <img src="Noise_Complaint_Seasons.png" class="img-fluid"> <br> For more in-depth analysis, please see individual report <a href="https://lamariah.github.io/STA9750-2025-SPRING/#juxtaposing-income-and-complaints-the-staten-island-paradox">HERE</a></p>
+</section>
+</section>
+<section id="socioeconomic-factors" class="level2">
+<h2 class="anchored" data-anchor-id="socioeconomic-factors"><strong>Socioeconomic Factors</strong></h2>
+<section id="how-to-socioeconomic-factors-relate-to-noise-complaint-frequency" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-socioeconomic-factors-relate-to-noise-complaint-frequency"><em>How to socioeconomic factors relate to noise complaint frequency?</em></h3>
+<p>Using 2022 noise complaint data and American Community Survey estimates, the analysis combined spatial mapping, bivariate choropleth visualization and Pearson correlation to examine patterns across New York City.<br>
+<br> The results reveal that housing tenure, specifically rates of owner-occupied and renter-occupied housing shows some level of linear association with noise complaints. Other variables such as income, education, gender, age, poverty and employment showed no statistically significant relationships. These findings suggest that neighborhood housing composition plays a key role in noise reporting behavior or exposure while other socioeconomic dimensions may have more limited influence. <img src="Noise vs Renter occupied.png" class="img-fluid"> The map shows that neighborhoods with high renter-occupied housing rates tend to report more noise complaints, especially in central areas of Manhattan, the Bronx, and Brooklyn (purple). In contrast, low-renter areas with high noise (orange) are scattered, while areas with both low renter rates and low noise (gray) are mostly in less dense regions like Staten Island and parts of Queens. This suggests a link between rental housing concentration and noise complaint volume. <br> <img src="Noise vs Owner Occupied Housing.png" class="img-fluid"> Neighborhoods with high noise complaints and low owner-occupied housing (orange areas) are mainly in the Bronx and parts of Brooklyn, while high ownership and low noise (blue) dominate Staten Island and Queens. <br> <img src="correlation_summary.png" class="img-fluid"> Neighborhoods with more owner-occupied housing reported fewer noise complaints. Statistically significant negative correlation (r = -0.199, p = 0.005). Neighborhoods with more renter-occupied housing reported slightly more noise complaints. Statistically significant positive correlation (r = 0.145, p = 0.038). All other neighborhood-level socioeconomic variables showed no significant correlation with noise complaints.<br>
+<br> For more in-depth analysis, please see individual report <a href="https://korang2024.github.io/STA9750-2025-SPRING/finalproject.html">HERE</a></p>
+</section>
+</section>
+<section id="summary-of-conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="summary-of-conclusions"><strong>Summary of Conclusions</strong></h2>
+<p>After analyzing the 311 data, there are some clear conclusions and trends. Overall, Manhattan’s nightlife and commercial neighborhoods have the highest noise‑complaint densities, followed by Brooklyn’s Williamsburg and Bushwick. Queens, the Bronx, and Staten Island show much lower rates once normalized for area and population. As for noise complaints and shooting incidents, they share certain trends, such as similar types of locations and times of day, which could help the city be efficient in their police patrolling and responses. Higher-income neighborhoods report steadily across days and seasons, while lower-income areas concentrate their complaints during evening leisure hours, weekends, and summer months. And finally, housing characteristics showed a clear link to noise complaints while other socioeconomic factors (gender, education, income, employment, age, poverty) had no significant association.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/emurphy005\.github\.io\/?var:course\.repo\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
